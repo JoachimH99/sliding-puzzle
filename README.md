@@ -1,3 +1,19 @@
+# Sliding Puzzle Game
+
+🎮 **[Play Live Demo](https:///<joachimH99e>.github.io/sliding-puzzle)**
+
+A sliding puzzle game built with React, featuring a solver using the A* algorithm.
+
+## Features
+
+- Interactive 4x4 sliding puzzle
+- Solver that finds the optimal solution
+- Shuffle button for random puzzles
+- Smooth animations
+- Confetti celebration when solved
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
