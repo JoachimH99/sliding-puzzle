@@ -2,13 +2,23 @@ import { useState, useEffect } from "react";
 import { solvePuzzle as aStarSolve } from "./solution/aStarAlgorithm.js";
 import Confetti from "react-confetti";
 
-const TILE_SIZE = 150; // size of each tile
-const GAP = 5;         // spacing between tiles
 const GRID_SIZE = 4;
 
 const IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/e/e5/Blue-eyed_domestic_cat_%28Felis_silvestris_catus%29.jpg";
 
 function App() {
+    // Calculate responsive tile size
+    const calculateTileSize = () => {
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const maxSize = Math.min(screenWidth, screenHeight) * 0.85; // 85% of smaller dimension
+        const tileSize = Math.floor((maxSize - (GRID_SIZE + 1) * 5) / GRID_SIZE); // Account for gaps
+        return Math.min(tileSize, 150); // Cap at 150px for large screens
+    };
+
+    const [tileSize, setTileSize] = useState(calculateTileSize());
+    const GAP = Math.max(3, Math.floor(tileSize * 0.03)); // Responsive gap
+
     // initialize tiles: each tile knows its correct slice and current position
     const [tiles, setTiles] = useState(() => {
         const arr = [];
@@ -32,8 +42,10 @@ function App() {
     });
 
     useEffect(() => {
-        const handleResize = () =>
+        const handleResize = () => {
             setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+            setTileSize(calculateTileSize());
+        };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
@@ -181,45 +193,48 @@ function App() {
         playNext();
     };
 
+    const buttonStyle = {
+        padding: "12px 24px",
+        fontSize: "1.1rem",
+        cursor: "pointer",
+        borderRadius: 8,
+        color: "white",
+        border: "none",
+        minWidth: "120px",
+        fontWeight: "600",
+        touchAction: "manipulation", // Better touch response
+    };
+
     return (
         <div
             style={{
                 margin: 0,
-                padding: 40,
+                padding: "20px",
                 textAlign: "center",
-                backgroundColor: "#3d3d3d", // ← your color here
-                minHeight: "100vh",         // fill full viewport height
+                backgroundColor: "#3d3d3d",
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
-
-            <div style={{ marginBottom: 12 }}>
+            <div style={{ marginBottom: 20, display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
                 <button
                     onClick={shuffleTiles}
                     style={{
-                        marginRight: 8,
-                        padding: "8px 14px",
-                        fontSize: "1rem",
-                        cursor: "pointer",
-                        borderRadius: 6,
+                        ...buttonStyle,
                         backgroundColor: "#6a167d",
-                        color: "white",
-                        border: "none",
                     }}
                 >
                     Shuffle
                 </button>
 
                 <button
-                    onClick={solvePuzzle}   // your function to solve
+                    onClick={solvePuzzle}
                     style={{
-                        marginLeft: 8,         // optional, just to match spacing
-                        padding: "8px 14px",
-                        fontSize: "1rem",
-                        cursor: "pointer",
-                        borderRadius: 6,
-                        backgroundColor: "#2196f3", // different color
-                        color: "white",
-                        border: "none",
+                        ...buttonStyle,
+                        backgroundColor: "#2196f3",
                     }}
                 >
                     Solve
@@ -229,11 +244,12 @@ function App() {
             <div
                 style={{
                     position: "relative",
-                    width: `${GRID_SIZE * TILE_SIZE + (GRID_SIZE + 1) * GAP}px`,
-                    height: `${GRID_SIZE * TILE_SIZE + (GRID_SIZE + 1) * GAP}px`,
+                    width: `${GRID_SIZE * tileSize + (GRID_SIZE + 1) * GAP}px`,
+                    height: `${GRID_SIZE * tileSize + (GRID_SIZE + 1) * GAP}px`,
                     margin: "0 auto",
                     background: "#000000",
                     borderRadius: 3,
+                    touchAction: "manipulation",
                 }}
             >
                 {tilesToRender.map((tile) => (
@@ -242,28 +258,29 @@ function App() {
                         onClick={() => moveTileById(tile.id)}
                         style={{
                             position: "absolute",
-                            // ⬇ Add the gap offset for uniform border
-                            top: `${(tile.row + 1) * GAP + tile.row * TILE_SIZE}px`,
-                            left: `${(tile.col + 1) * GAP + tile.col * TILE_SIZE}px`,
-                            width: `${TILE_SIZE}px`,
-                            height: `${TILE_SIZE}px`,
+                            top: `${(tile.row + 1) * GAP + tile.row * tileSize}px`,
+                            left: `${(tile.col + 1) * GAP + tile.col * tileSize}px`,
+                            width: `${tileSize}px`,
+                            height: `${tileSize}px`,
                             cursor: "pointer",
                             borderRadius: 3,
                             transition: "top 0.1s ease, left 0.1s ease",
                             backgroundImage: `url(${IMAGE_URL})`,
-                            backgroundSize: `${GRID_SIZE * TILE_SIZE}px ${GRID_SIZE * TILE_SIZE}px`,
-                            backgroundPosition: `-${tile.correctCol * TILE_SIZE}px -${tile.correctRow * TILE_SIZE}px`,
+                            backgroundSize: `${GRID_SIZE * tileSize}px ${GRID_SIZE * tileSize}px`,
+                            backgroundPosition: `-${tile.correctCol * tileSize}px -${tile.correctRow * tileSize}px`,
                             boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                            touchAction: "manipulation",
                         }}
                     />
                 ))}
             </div>
 
-
             {solved && (
                 <>
                     <Confetti width={windowSize.width} height={windowSize.height} numberOfPieces={400} gravity={0.6} />
-                    <div style={{ color: "green", fontSize: "1.25rem", marginTop: 16 }}>🎉 Puzzle Solved! 🎉</div>
+                    <div style={{ color: "#4caf50", fontSize: "1.5rem", marginTop: 20, fontWeight: "bold" }}>
+                        🎉 Puzzle Solved! 🎉
+                    </div>
                 </>
             )}
         </div>
