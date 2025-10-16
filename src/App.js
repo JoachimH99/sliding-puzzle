@@ -223,7 +223,7 @@ function App() {
         <div
             style={{
                 margin: 0,
-                padding: "20px",
+                padding: 0,
                 textAlign: "center",
                 backgroundColor: "#3d3d3d",
                 minHeight: "100vh",
@@ -246,7 +246,6 @@ function App() {
                     position: "relative",
                     width: `${GRID_SIZE * tileSize + (GRID_SIZE + 1) * GAP}px`,
                     height: `${GRID_SIZE * tileSize + (GRID_SIZE + 1) * GAP}px`,
-                    margin: "0 auto",
                     background: "#000000",
                     borderRadius: 3,
                     touchAction: "manipulation",
@@ -275,7 +274,7 @@ function App() {
                 ))}
             </div>
 
-            <div style={{ marginBottom: 20, display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+            <div style={{ marginTop: 20, display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
                 <button
                     onClick={shuffleTiles}
                     style={{
