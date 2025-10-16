@@ -42,12 +42,26 @@ function App() {
     });
 
     useEffect(() => {
+        // Prevent scrolling
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.height = '100%';
+        
         const handleResize = () => {
             setWindowSize({ width: window.innerWidth, height: window.innerHeight });
             setTileSize(calculateTileSize());
         };
         window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        
+        return () => {
+            // Cleanup - restore scrolling when component unmounts
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.height = '';
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
     // Move by tile id (we render DOM in stable order; indices are separate)
@@ -213,33 +227,19 @@ function App() {
                 textAlign: "center",
                 backgroundColor: "#3d3d3d",
                 minHeight: "100vh",
+                height: "100vh",
+                width: "100vw",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
+                overflow: "hidden",
+                position: "fixed",
+                top: 0,
+                left: 0,
             }}
         >
-            <div style={{ marginBottom: 20, display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
-                <button
-                    onClick={shuffleTiles}
-                    style={{
-                        ...buttonStyle,
-                        backgroundColor: "#6a167d",
-                    }}
-                >
-                    Shuffle
-                </button>
 
-                <button
-                    onClick={solvePuzzle}
-                    style={{
-                        ...buttonStyle,
-                        backgroundColor: "#2196f3",
-                    }}
-                >
-                    Solve
-                </button>
-            </div>
 
             <div
                 style={{
@@ -273,6 +273,28 @@ function App() {
                         }}
                     />
                 ))}
+            </div>
+
+            <div style={{ marginBottom: 20, display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+                <button
+                    onClick={shuffleTiles}
+                    style={{
+                        ...buttonStyle,
+                        backgroundColor: "#6a167d",
+                    }}
+                >
+                    Shuffle
+                </button>
+
+                <button
+                    onClick={solvePuzzle}
+                    style={{
+                        ...buttonStyle,
+                        backgroundColor: "#2196f3",
+                    }}
+                >
+                    Solve
+                </button>
             </div>
 
             {solved && (
