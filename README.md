@@ -1,6 +1,6 @@
 # Sliding Puzzle Game
 
-🎮 **[Play Live Demo](https:///<joachimH99e>.github.io/sliding-puzzle)**
+🎮 **[Play Live Demo](https:///joachimH99.github.io/sliding-puzzle)**
 
 A sliding puzzle game built with React, featuring a solver using the A* algorithm.
 
